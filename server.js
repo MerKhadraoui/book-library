@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 dotenv.config();
 const PORT = process.env.PORT || 5000;
-
+app.use(cors())
 const app = express();
  
 const MONGO_URI = process.env.CONNECTION_URL
