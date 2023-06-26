@@ -6,9 +6,11 @@ const router= express.Router()
 
 router.post("/add-book",adminAuth,addBook)
 router.get("/all-books",authorization,getBooks)
-router.put("/all-books/rent",authorization,rentBook)
+router.post("/all-books/rent",rentBook) //Eu->post
 router.put("/all-books/return",authorization,returnBook)
 router.post("/review",authorization,review)
+
+router.post("/add-database",addBook)//Eugenia only -> for testing only, then delete
 
 
 export default router
