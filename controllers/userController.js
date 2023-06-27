@@ -1,6 +1,8 @@
 import User from "../models/userModel.js"
 import bcrypt from "bcrypt"
 import userModel from "../models/userModel.js"
+
+
 export const createUser =async(req,res,next) => {
 try{
     const { firstName, lastName,email,password}=req.body
@@ -45,14 +47,3 @@ export const getAllUsers = async (req,res,next)=>{
     }
 }
 
-///eugenia for testing only->then delete->
-
-export const addUser = async(req,res,next)=>{
-    try {
-        const userList = await userModel.create(req.body)
-       res.status(200).json(userList)
-    } catch (err) {
-        next(err)
-    }
-}
-///////////////////////////////////////////

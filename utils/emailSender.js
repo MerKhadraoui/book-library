@@ -16,7 +16,7 @@ export const emailSender = async ( email, subject, plainText, htmlText) =>{
           to: email,
           from: {
             name: 'Book-library',
-            email: 'eugeniabutkevich2022@gmail.com',
+            email:process.env.MY_ACTUAL_EMAIL_ADDRESS,
           },
           subject: subject,
           text: plainText,

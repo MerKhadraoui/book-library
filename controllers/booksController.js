@@ -5,6 +5,7 @@ import { emailSender } from "../utils/emailSender.js"
 
 
 
+
 export const addBook=async(req,res)=>{
     try{
 
@@ -15,6 +16,8 @@ res.status(200).send("New Book has ben added ...!")
         res.status(400).send("Something went wrong")
     }
 }
+
+
 export const getBooks=async(req,res)=>{
 try{
     const books = await Book.find()
@@ -27,13 +30,22 @@ try{
 }
 
 
-/////////////////////////Eu changed
+/////////////////////////Eu 
 export const rentBook = async (req, res, next) => {
     try {
-      const { userId, bookId } = req.body;
-      console.log(req.body);
+
+       //auth added:
       
-      await Book.findByIdAndUpdate(
+     
+      console.log(req.body);
+
+      const { bookId } = req.body; 
+
+      const userId =req.userId
+      const email=req.email
+     //______________
+      
+      await Book.findByIdAndUpdate(  
         bookId,
         { available: false, rentedBy: userId },
         { new: true }
@@ -52,10 +64,10 @@ export const rentBook = async (req, res, next) => {
       const formattedDate = `${day}.${month}.${year}`;
   
       // Email content:
-      const email = userData.email;
+      
       const subject = 'Confirmation Email';
       const plainText = 'Your book rental has been confirmed.';
-      const htmlText = `<h2>Dear ${userData.firstName},</h2> your book rental Title: "${bookData.bookName}" Author: ${bookData.bookAuthor} has been confirmed. The latest return date is ${formattedDate}`;
+      const htmlText = `<h2>Dear ${userData.firstName},</h2> your book rental Title: "${bookData.bookName}" Author: ${bookData.bookAuthor} has been confirmed. The latest return date is <b>${formattedDate}</b>`;
   
       const emailSent = await emailSender(email, subject, plainText, htmlText);
   
