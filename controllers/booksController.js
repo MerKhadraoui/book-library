@@ -1,6 +1,13 @@
 import Book from "../models/bookModel.js"
 import User from "../models/userModel.js"
 import Review from "../models/reviewModel.js"
+import { emailSender } from "../utils/emailSender.js"
+
+
+
+
+// export const addBook=async(req,res)=>{
+//     try{
 export const addBook = async (req, res) => {
     try {
 
@@ -11,20 +18,104 @@ export const addBook = async (req, res) => {
         res.status(400).send("Something went wrong")
     }
 }
-export const getBooks = async (req, res) => {
-    try {
-        const books = await Book.find()
-        res.status(200).json(books)
-    }
-    catch (err) {
+
+
+export const getBooks=async(req,res)=>{
+try{
+    const books = await Book.find()
+    res.status(200).json(books)
+}
+    catch(err){
+// export const getBooks = async (req, res) => {
+//     try {
+//         const books = await Book.find()
+//         res.status(200).json(books)
+//     }
+//     catch (err) {
         res.status(400).send("Something went wrong")
 
     }
 }
+
+
+/////////////////////////Eu 
+// export const rentBook = async (req, res, next) => {
+//     try {
+
+//        //auth added:
+      
+     
+//       console.log(req.body);
 export const rentBook = async (req, res, next) => {
     try {
         console.log(req.body);
 
+      const { bookId } = req.body; 
+
+      const userId =req.userId
+      const email=req.email
+     //______________
+      
+      await Book.findByIdAndUpdate(  
+        bookId,
+        { available: false, rentedBy: userId },
+        { new: true }
+      );
+  
+      const userData = await User.findOne({ _id: userId });
+      const bookData = await Book.findOne({ _id: bookId });
+      console.log(userData, bookData);
+  
+      // Get date for book return:
+      const today = new Date();
+      today.setDate(today.getDate() + 30)
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+      const formattedDate = `${day}.${month}.${year}`;
+  
+      // Email content:
+      
+      const subject = 'Confirmation Email';
+      const plainText = 'Your book rental has been confirmed.';
+      const htmlText = `<h2>Dear ${userData.firstName},</h2> your book rental Title: "${bookData.bookName}" Author: ${bookData.bookAuthor} has been confirmed. The latest return date is <b>${formattedDate}</b>`;
+  
+      const emailSent = await emailSender(email, subject, plainText, htmlText);
+  
+      if (emailSent) {
+        res.status(200).json({ message: 'Book rented and confirmation email sent.' });
+      } else {
+        const err = new Error('Error renting book.');
+        err.statusCode = 401;
+        throw err;
+      }
+    } catch (err) {
+      next(err);
+    }
+  };
+//----------------------
+  
+  export const returnBook = async (req, res, next) => {
+    try {
+      const { userId, bookId } = req.body;
+      const userData = await User.findOne({ _id: userId });
+      const bookData = await Book.findOne({ _id: bookId });
+      console.log(userData, bookData);
+  
+      if (!bookData.available) {
+        await Book.findByIdAndUpdate(
+          { _id: bookId },
+          { available: true, rentedBy: 'non' },
+          { new: true }
+        );
+        res.status(201).send('Book returned...! Thank you for visiting us.');
+      } else {
+        const err = new Error('Please check user data.');
+        err.statusCode = 401;
+        throw err;
+      }
+    } catch (err) {
+      next(err);
         const { userId, bookId } = req.body
         const userData = await User.findOne({ _id: userId })
         const bookData = await Book.findOne({ _id: bookId })
@@ -39,36 +130,36 @@ export const rentBook = async (req, res, next) => {
             throw err
         }
     }
-    catch (err) {
-        next(err)
+    // catch (err) {
+    //     next(err)
 
-    }
+    // }
 
 }
-export const returnBook = async (req, res, next) => {
+// export const returnBook = async (req, res, next) => {
 
-    try {
+//     try {
 
-        const { userId, bookId } = req.body
-        const userData = await User.findOne({ _id: userId })
-        const bookData = await Book.findOne({ _id: bookId })
-        console.log(userData, bookData);
-        if (!bookData.available) {
-            await Book.findByIdAndUpdate({ _id: bookId }, { available: true, rentedBy: "non" }, { new: true })
-            res.status(201).send("Book returned...!Thank you for visit us")
-        }
-        else {
-            const err = new Error("please check user data..!")
-            err.statusCode = 401
-            throw err
-        }
-    }
-    catch (err) {
+//         const { userId, bookId } = req.body
+//         const userData = await User.findOne({ _id: userId })
+//         const bookData = await Book.findOne({ _id: bookId })
+//         console.log(userData, bookData);
+//         if (!bookData.available) {
+//             await Book.findByIdAndUpdate({ _id: bookId }, { available: true, rentedBy: "non" }, { new: true })
+//             res.status(201).send("Book returned...!Thank you for visit us")
+//         }
+//         else {
+//             const err = new Error("please check user data..!")
+//             err.statusCode = 401
+//             throw err
+//         }
+//     }
+//     catch (err) {
 
-        next()
+//         next()
 
-    }
-}
+//     }
+// }
 
 export const review = async (req, res, next) => {
     try {
