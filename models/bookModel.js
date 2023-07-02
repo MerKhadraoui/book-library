@@ -17,5 +17,6 @@ const bookSchema =new mongoose.Schema({
            ref: "review"
        }]
    },
+
 })
-export default mongoose.model ("book",bookSchema)
+export default mongoose.model("book", bookSchema)
