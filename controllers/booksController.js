@@ -160,10 +160,8 @@ export const review = async (req, res, next) => {
     await newReview.save();
     //    const   allReviews=await Book.find().populate("review")
     //console.log(allReviews);
-    res.status(200).send("hhhhh");
+    res.status(200).send("Thank you for your Feedbacks...!");
   } catch (err) {
     res.status(400).send("something went wrong");
   }
 };
-
-

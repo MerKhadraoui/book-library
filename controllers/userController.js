@@ -39,12 +39,15 @@ export const createUser = async (req, res, next) => {
 
 export const getAllUsers = async (req, res, next) => {
     try {
-        const userList = await userModel.find(req.body)
-        res.status(200).json(userList)
+
+        const userList = await User.find(req.body);
+        res.status(200).json(userList);
+
     } catch (err) {
-        next(err)
+        next(err);
+
     }
-}
+};
 
 export const deleteUser = async (req, res) => {
     try {
