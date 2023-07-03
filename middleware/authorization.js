@@ -1,6 +1,4 @@
 import jwt from "jsonwebtoken"
-
-
 export const authorization=async(req,res,next)=>{
 try {
 const JWT_SECRET_KEY=process.env.JWT_SECRET_KEY
@@ -47,5 +45,3 @@ catch(err){
 }
 next()
 }
-
-// && req.email!="segunadelehin@gmail.com"
