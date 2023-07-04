@@ -67,3 +67,31 @@ export const passwordChangeHandler=async(req,res,next)=>{
   }
 
 }
+
+    const hashedPass = checkUser.password;
+    const validation = await bcrypt.compare(password, hashedPass);
+
+    if (validation) {
+      const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+      const payload = {
+        email: email,
+        firstName: checkUser.firstName,
+        userId: checkUser._id,
+        userType: checkUser.userType,
+      };
+      
+      const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: 3600 });
+      res
+        .status(201)
+        .json({
+          message: "logged in successfully",
+          token,
+          firstName: checkUser.firstName,
+          userId: checkUser.userId_id,
+          userType: checkUser.userType,
+        });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
