@@ -10,9 +10,15 @@ export const loginHandler = async (req, res, next) => {
             err.statusCode = 400
             throw err
         }
+        
         const hashedPass = checkUser.password
         const validation = await bcrypt.compare(password, hashedPass)
-        if (validation) {
+        if (!validation){
+            const err = new Error("Invalid Credentials!")
+            err.statusCode = 400
+            throw err
+        }
+         else{
             const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
             const payload = {
                 email: email,
@@ -21,7 +27,7 @@ export const loginHandler = async (req, res, next) => {
                 userType: checkUser.userType
             }
             const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: 3600 })
-            res.status(201).json({ message: "logged in successfully", token, firstName: checkUser.firstName, userId: checkUser.userId_id, userType: checkUser.userType })
+            res.status(201).json({ message: "logged in successfully", token, firstName: checkUser.firstName, _id:checkUser._id, userType:checkUser.userType })
 
 
 }
