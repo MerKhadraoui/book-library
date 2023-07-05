@@ -158,7 +158,7 @@ export const review = async (req, res, next) => {
     //console.log(allReviews);
     res.status(200).send("Thank you for your Feedbacks...!");
   } catch (err) {
-    res.status(400).send("something went wrong");
+    res.status(400).send("Sorry..stars Evaluation from 1 to 5");
   }
 };
 
