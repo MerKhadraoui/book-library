@@ -1,6 +1,7 @@
 import Book from "../models/bookModel.js";
 import User from "../models/userModel.js";
 import Review from "../models/reviewModel.js";
+import {emailSender}from "../utils/emailSender.js"
 
 export const addBook = async (req, res) => {
   try {
@@ -19,22 +20,13 @@ export const getBooks = async (req, res) => {
   }
 };
 
-/////////////////////////Eu
-// export const rentBook = async (req, res, next) => {
-//     try {
 
-//        //auth added:
-
-//       console.log(req.body);
 export const rentBook = async (req, res, next) => {
   try {
-    console.log(req.body);
 
-    const { bookId } = req.body;
+    const { bookId,userId,email } = req.body;
 
-    const userId = req.userId;
-    const email = req.email;
-    //______________
+   
 
     await Book.findByIdAndUpdate(
       bookId,
@@ -59,7 +51,11 @@ export const rentBook = async (req, res, next) => {
     const subject = "Confirmation Email";
     const plainText = "Your book rental has been confirmed.";
     const htmlText = `<h2>Dear ${userData.firstName},</h2> your book rental Title: "${bookData.bookName}" Author: ${bookData.bookAuthor} has been confirmed. The latest return date is <b>${formattedDate}</b>`;
-
+      if(bookData.available){
+        const err = new Error(" Sorry..Book already rented.")
+        err.statusCode = 401;
+        throw err;
+      }
     const emailSent = await emailSender(email, subject, plainText, htmlText);
 
     if (emailSent) {
@@ -161,7 +157,7 @@ export const review = async (req, res, next) => {
     //console.log(allReviews);
     res.status(200).send("Thank you for your Feedbacks...!");
   } catch (err) {
-    res.status(400).send("something went wrong");
+    res.status(400).send("Sorry..stars Evaluation from 1 to 5");
   }
 };
 
