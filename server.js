@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/user", userRoutes);
-app.get("/", (eq, res) => {
+app.get("/", (req, res) => {
   res.send("Welcome User ");
 });
 app.use("/books", booksRoutes);
